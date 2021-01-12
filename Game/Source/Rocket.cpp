@@ -1,16 +1,46 @@
 #include "Rocket.h"
 #include "PhysicsEngine.h"
+#include "Module.h"
 
-
+#include "Defs.h"
+#include "Log.h"
 
 Rocket::~Rocket()
 {
+	//idlAnim.PushBack({ 0, 0, 64, 85 });
 }
 
 void Rocket::launchRocket()
 {
 
 }
+//
+//bool Rocket::Awake()
+//{
+//	LOG("Loading Rocket");
+//	bool ret = true;
+//
+//	return ret;
+//}
+//
+//bool Rocket::Start()
+//{
+//	currentAnimation = &idlAnim;
+//	return true;
+//}
+//
+//
+//bool Rocket::Update()
+//{
+//
+//	return true;
+//}
+//
+//bool Rocket::PostUpdate()
+//{
+//	SDL_Rect rect = currentAnimation->GetCurrentFrame();
+//	return true;
+//}
 
 
 void Rocket::refillFuel()

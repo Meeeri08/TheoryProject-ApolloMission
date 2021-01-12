@@ -16,6 +16,7 @@ class Textures;
 class Audio;
 class Scene;
 class PhysicsEngine;
+//class Rocket;
 
 class App
 {
@@ -78,6 +79,7 @@ public:
 	Audio* audio;
 	Scene* scene;
 	PhysicsEngine* physicsEngine;
+	//Rocket* rocket;
 
 private:
 

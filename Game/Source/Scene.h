@@ -5,7 +5,11 @@
 #include "Rocket.h"
 #include "Planet.h"
 
+#include "Defs.h"
+
+
 struct SDL_Texture;
+class SDL_Rect;
 
 
 class Scene : public Module
@@ -36,9 +40,11 @@ public:
 	bool CleanUp();
 
 private:
-	SDL_Texture* img;
+	SDL_Texture* background;
+	SDL_Texture* texRocket;
 
 	Planet* earth;
+	Planet* moon;
 };
 
 #endif // __SCENE_H__

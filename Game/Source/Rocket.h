@@ -1,8 +1,9 @@
-#pragma once
+#ifndef __ROCKET_H__
+#define __ROCKET_H__
 
 #include "Body.h"
 #include "Vectors.h"
-
+#include "Animation.h"
 
 class Rocket : public Body
 {
@@ -10,6 +11,18 @@ public:
 
 	Rocket(){}
 	~Rocket();
+
+	//bool Awake();
+
+	//bool Start();
+
+	//bool Update();
+
+	//bool PostUpdate();
+
+	//Animation* currentAnimation = nullptr;
+
+	//Animation idlAnim;
 
 public:
 	int health;
@@ -26,3 +39,7 @@ public:
 	void OnCollision();
 
 };
+
+
+
+#endif // __ROCKET_H__
