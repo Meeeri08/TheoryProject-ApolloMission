@@ -77,11 +77,11 @@ bool Scene::Update(float dt)
 		
 		
 	if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		app->physicsEngine->rocket->AddMomentum(-2.8f, 0.0f);
+		//app->physicsEngine->rocket->AddMomentum(-2.8f, 0.0f);
 		
 		
 	if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		app->physicsEngine->rocket->AddMomentum(2.8f, 0.0f);
+		//app->physicsEngine->rocket->AddMomentum(2.8f, 0.0f);
 	
 	//Camera movement
 
