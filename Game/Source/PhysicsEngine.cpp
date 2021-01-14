@@ -13,7 +13,7 @@ PhysicsEngine::~PhysicsEngine()
 
 bool PhysicsEngine::Start()
 {
-	gravity = Vec2(0, 0.5);
+	gravity = Vec2(0, 0.2);
 	return true;
 }
 
@@ -66,7 +66,18 @@ void PhysicsEngine::ApplyGravity()
 		item = item->next;
 	}*/
 
-	rocket->velocity += gravity;
+	if (rocket->pos.y <= -2100 && rocket->pos.y > -7100)
+	{
+
+	}
+	else if (rocket->pos.y <= -7100)
+	{
+		rocket->velocity -= gravity;
+
+	}
+	else {
+		rocket->velocity += gravity;
+	}
 }
 
 Vec2 PhysicsEngine::forceGrav(float gravity, float mass1, float mass2, float distance, Vec2 direction)

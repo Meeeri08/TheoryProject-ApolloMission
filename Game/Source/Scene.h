@@ -42,9 +42,14 @@ public:
 private:
 	SDL_Texture* background;
 	SDL_Texture* texRocket;
+	SDL_Texture* texWin;
 
 	Planet* earth;
 	Planet* moon;
+
+	bool win = false;
+	bool winMoon = false;
+	
 };
 
 #endif // __SCENE_H__
