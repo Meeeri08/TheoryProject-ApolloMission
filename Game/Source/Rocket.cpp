@@ -57,6 +57,49 @@ void Rocket::AddMomentum(float xV, float yV)
 
 }
 
+void Rocket::AddMomentumAngle(float xV, float yV, float angleRotation)
+{
+	float velocityX, velocityY;
+	if (angleRotation == 0)
+	{
+		velocityX = 0;
+		velocityY = (yV / mass);
+	}
+	else if (angleRotation == 180 || angleRotation == -180)
+	{
+		velocityX = 0;
+		velocityY = -(yV / mass);
+	}
+	else if (angleRotation > 0 && angleRotation < 90)
+	{
+		velocityX = (xV + angleRotation / mass) * 0.005;
+		velocityY = (yV / mass);
+	}
+	else if (angleRotation < 0 && angleRotation > -90)
+	{
+		velocityX = -((xV - angleRotation / mass) * 0.005);
+		velocityY = (yV / mass);
+	}
+	else if (angleRotation > 90 && (angleRotation < 180 || angleRotation == -180))
+	{
+		velocityX = (xV + angleRotation / mass) * 0.005;
+		velocityY = -(yV / mass);
+	}
+	else if (angleRotation < -90 && (angleRotation > -180 || angleRotation == 180))
+	{
+		velocityX = -((xV - angleRotation / mass) * 0.005);
+		velocityY = -(yV / mass);
+	}
+	//float velocityX = (xV+angleRotation / mass)*0.005;
+	//float velocityY = (yV-angleRotation / mass)*0.05;
+
+
+
+	velocity.x += velocityX;
+	velocity.y += velocityY;
+
+}
+
 void Rocket::OnCollision()
 {
 	ListItem<Body*>* item = app->physicsEngine->bodyList.start;

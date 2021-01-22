@@ -14,6 +14,8 @@ PhysicsEngine::~PhysicsEngine()
 bool PhysicsEngine::Start()
 {
 	gravity = Vec2(0, 0.2);
+	gravityEarth = Vec2(0, 0.2);
+	gravityMoon = Vec2(0, 0.1);
 	return true;
 }
 
@@ -72,11 +74,11 @@ void PhysicsEngine::ApplyGravity()
 	}
 	else if (rocket->pos.y <= -7100)
 	{
-		rocket->velocity -= gravity;
+		rocket->velocity -= gravityMoon;
 
 	}
 	else {
-		rocket->velocity += gravity;
+		rocket->velocity += gravityEarth;
 	}
 }
 

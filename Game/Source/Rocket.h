@@ -37,6 +37,7 @@ public:
 	void launchRocket();
 	void refillFuel();
 	void AddMomentum(float xV, float yV);
+	void AddMomentumAngle(float xV, float yV, float angleRotation);
 	void OnCollision();
 
 };

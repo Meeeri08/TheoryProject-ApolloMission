@@ -52,6 +52,8 @@ public: // May the Force be with you
     void ApplyGravity();
 
     Vec2 gravity;
+    Vec2 gravityEarth;
+    Vec2 gravityMoon;
     Rocket *rocket;
 
     List<Body*> bodyList;
