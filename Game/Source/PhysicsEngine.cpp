@@ -121,7 +121,7 @@ Vec2 PhysicsEngine::forceHydroDrag()
 	return test;
 }
 
-Rocket* PhysicsEngine::CreateRocket(Vec2 position, float mass, Vec2 velocity, float rad, int health, float fuel)
+Rocket* PhysicsEngine::CreateRocket(Vec2 position, float mass, Vec2 velocity, float rad, int health, float fuel, float angle)
 {
 	Rocket *rocket = new Rocket();
 	rocket->pos = position;
@@ -130,7 +130,7 @@ Rocket* PhysicsEngine::CreateRocket(Vec2 position, float mass, Vec2 velocity, fl
 	rocket->health = health;
 	rocket->fuel = fuel;
 	rocket->radius = rad;
-	
+	rocket->angle = angle;
 	bodyList.Add(rocket);
 
 	return rocket;

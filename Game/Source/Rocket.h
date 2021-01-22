@@ -30,6 +30,7 @@ public:
 	Vec2 velocity;
 	Vec2 acceleration;
 	float f;
+	float angle;
 
 public:
 

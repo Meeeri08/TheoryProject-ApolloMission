@@ -40,9 +40,9 @@ bool Scene::Start()
 	texWin = app->tex->Load("Assets/Textures/win.png");
 	//app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
 	
-	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(600, 500), 5, Vec2(0,0), 20, 10, 50.0f);
+	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(600, 480), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
 	earth = app->physicsEngine->CreatePlanet(Vec2(600, 900), 20, 350);
-	moon = app->physicsEngine->CreatePlanet(Vec2(600, -9000), 20, 300);
+	moon = app->physicsEngine->CreatePlanet(Vec2(600, -10800), 20, 300);
 	return true;
 }
 
@@ -55,15 +55,15 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
-	if (app->physicsEngine->rocket->pos.y < -8700)
+	if (app->physicsEngine->rocket->pos.y < -10700)
 	{
-		app->physicsEngine->rocket->pos.y = -8700;
+		app->physicsEngine->rocket->pos.y = -10700;
 		//app->physicsEngine->rocket->acceleration.y = 0;
 		app->physicsEngine->rocket->velocity.y = 0;
 	}
-	if (app->physicsEngine->rocket->pos.y > 500)
+	if (app->physicsEngine->rocket->pos.y > 480)
 	{
-		app->physicsEngine->rocket->pos.y = 500;
+		app->physicsEngine->rocket->pos.y = 480;
 		//app->physicsEngine->rocket->acceleration.y = 0;
 		app->physicsEngine->rocket->velocity.y = 0;
 	}
@@ -91,14 +91,14 @@ bool Scene::Update(float dt)
 			app->physicsEngine->rocket->AddMomentum(0.0f, 1.1f);
 	}
 	
-	//if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-	//	app->physicsEngine->rocket->AddMomentum(-2.8f, 0.0f);
-	//if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-	//	app->physicsEngine->rocket->AddMomentum(2.8f, 0.0f);
+	if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		app->physicsEngine->rocket->angle -= 0.02f;
+	if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		app->physicsEngine->rocket->angle += 0.02f;
 	
 	//Camera movement
 
-	if (app->physicsEngine->rocket->pos.y < 220) app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 220);
+	if (app->physicsEngine->rocket->pos.y < 300) app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 300);
 	
 
 	//LOG("position of the rocket x = %.2f  y = %.2f", rocket->pos.x, rocket->pos.y);
@@ -117,11 +117,11 @@ bool Scene::PostUpdate()
 	
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
-	app->render->DrawTexture(background, 0, -9000);
+	app->render->DrawTexture(background, 0, -10780);
 
 	if (!win) {
 		//SDL_Rect rect = currentAnimation->GetCurrentFrame();
-		app->render->DrawTexture(texRocket, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y/*, &rect*/);
+		app->render->DrawTexture(texRocket, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y,0, 1.0,app->physicsEngine->rocket->angle);
 	}
 	if (app->physicsEngine->rocket->pos.y <= -8500)
 	{

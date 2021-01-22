@@ -3,11 +3,6 @@
 #include "App.h"
 #include "Module.h"
 
-
-
-
-
-
 class SDL_Rect;
 class Body
 {
