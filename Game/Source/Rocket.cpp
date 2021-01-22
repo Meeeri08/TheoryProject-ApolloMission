@@ -70,25 +70,27 @@ void Rocket::AddMomentumAngle(float xV, float yV, float angleRotation)
 		velocityX = 0;
 		velocityY = -(yV / mass);
 	}
+
+
 	else if (angleRotation > 0 && angleRotation < 90)
 	{
 		velocityX = (xV + angleRotation / mass) * 0.005;
-		velocityY = (yV / mass);
+		velocityY = (yV / mass+(-1/angleRotation));
 	}
 	else if (angleRotation < 0 && angleRotation > -90)
 	{
 		velocityX = -((xV - angleRotation / mass) * 0.005);
-		velocityY = (yV / mass);
+		velocityY = (yV / mass-(-1/angleRotation));
 	}
 	else if (angleRotation > 90 && (angleRotation < 180 || angleRotation == -180))
 	{
 		velocityX = (xV + angleRotation / mass) * 0.005;
-		velocityY = -(yV / mass);
+		velocityY = -(yV / mass+(-1/angleRotation));
 	}
 	else if (angleRotation < -90 && (angleRotation > -180 || angleRotation == 180))
 	{
 		velocityX = -((xV - angleRotation / mass) * 0.005);
-		velocityY = -(yV / mass);
+		velocityY = -(yV / mass-(-1/angleRotation));
 	}
 	//float velocityX = (xV+angleRotation / mass)*0.005;
 	//float velocityY = (yV-angleRotation / mass)*0.05;

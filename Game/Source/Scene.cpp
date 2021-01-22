@@ -103,7 +103,7 @@ bool Scene::Update(float dt)
 	if (!win)
 	{
 		if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-			app->physicsEngine->rocket->AddMomentumAngle(1.0f, -1.1f, app->physicsEngine->rocket->angle);
+			app->physicsEngine->rocket->AddMomentumAngle(1.1f, -1.1f, app->physicsEngine->rocket->angle);
 
 		
 	}
