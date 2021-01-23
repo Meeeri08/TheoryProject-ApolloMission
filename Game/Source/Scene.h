@@ -55,6 +55,7 @@ private:
 
 	bool springActive = false;
 	bool outTrampoline = false;
+	bool prova = false;
 	
 };
 

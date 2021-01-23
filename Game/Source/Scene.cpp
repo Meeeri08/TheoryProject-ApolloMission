@@ -110,8 +110,9 @@ bool Scene::Update(float dt)
 		if (!win)
 		{
 			if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+			{
 				app->physicsEngine->rocket->AddMomentumAngle(1.1f, -1.1f, app->physicsEngine->rocket->angle);
-
+			}
 
 		}
 
@@ -147,14 +148,30 @@ bool Scene::Update(float dt)
 
 	if (app->physicsEngine->rocket->pos.y <= 494 && app->physicsEngine->rocket->pos.y >= 434 && app->physicsEngine->rocket->pos.x < 882 && app->physicsEngine->rocket->pos.x > 761 && springActive && !outTrampoline)
 	{
-		
-		app->physicsEngine->rocket->velocity.y = -(app->physicsEngine->rocket->velocity.y/1.01);
-		outTrampoline = true;
-		if (app->physicsEngine->rocket->velocity.y > -1 && app->physicsEngine->rocket->velocity.y < 1)
+		if (prova && app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		{
-			outTrampoline = false;
-			springActive = false;
+			prova = false;
 		}
+
+		if (!prova) {
+			float res = app->physicsEngine->rocket->velocity.y;
+			app->physicsEngine->rocket->velocity.y = -(app->physicsEngine->rocket->velocity.y / 1.01);
+			if (res < 100 && res>-100)
+			{
+				prova = true;
+			}
+		}
+		else {
+			app->physicsEngine->rocket->velocity.y = -(app->physicsEngine->rocket->velocity.y);
+		}
+		
+		outTrampoline = true;
+		//if (app->physicsEngine->rocket->velocity.y > -0.0002 && app->physicsEngine->rocket->velocity.y < 0.0002)
+		//{
+		//	outTrampoline = false;
+		//	springActive = false;
+		//	//app->physicsEngine->rocket->acceleration
+		//}
 	}
 
 	if (outTrampoline && app->physicsEngine->rocket->pos.y < 454) outTrampoline = false;
@@ -164,7 +181,6 @@ bool Scene::Update(float dt)
 
 	return true;
 }
-
 // Called each loop iteration
 bool Scene::PostUpdate()
 {
