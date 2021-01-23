@@ -60,37 +60,57 @@ void Rocket::AddMomentum(float xV, float yV)
 void Rocket::AddMomentumAngle(float xV, float yV, float angleRotation)
 {
 	float velocityX, velocityY;
-	if (angleRotation == 0)
-	{
-		velocityX = 0;
-		velocityY = (yV / mass);
-	}
-	else if (angleRotation == 180 || angleRotation == -180)
-	{
-		velocityX = 0;
-		velocityY = -(yV / mass);
-	}
+	//if (angleRotation == 0)
+	//{
+	//	velocityX = 0;
+	//	velocityY = (yV / mass);
+	//}
+	//else if (angleRotation == 180 || angleRotation == -180)
+	//{
+	//	velocityX = 0;
+	//	velocityY = -(yV / mass);
+	//}
 
 
-	else if (angleRotation > 0 && angleRotation < 90)
+	if (angleRotation >= 0 && angleRotation < 90)
 	{
-		velocityX = (xV + angleRotation / mass) * 0.005;
-		velocityY = (yV / mass+(-1/angleRotation));
+		if (angleRotation != 0)
+		{
+			velocityX = (xV + angleRotation / mass) * 0.003;
+		}
+		else {
+			velocityX = 0;
+		}
+		velocityY = (yV / mass + (-90 + angleRotation)) * 0.003;
+
 	}
-	else if (angleRotation < 0 && angleRotation > -90)
+	else if (angleRotation < 0 && angleRotation >= -90)
 	{
-		velocityX = -((xV - angleRotation / mass) * 0.005);
-		velocityY = (yV / mass-(-1/angleRotation));
+		velocityX = -((xV - angleRotation / mass) * 0.003);
+		velocityY = -(yV / mass+(90+angleRotation))*0.003;
 	}
-	else if (angleRotation > 90 && (angleRotation < 180 || angleRotation == -180))
+	else if (angleRotation >= 90 && (angleRotation <= 180))
 	{
-		velocityX = (xV + angleRotation / mass) * 0.005;
-		velocityY = -(yV / mass+(-1/angleRotation));
+		if (angleRotation != 180)
+		{
+			velocityX = (xV + angleRotation / mass) * 0.003;
+		}
+		else {
+			velocityX = 0;
+		}
+		velocityY = (yV / mass+(-90 + angleRotation))*0.003;
 	}
-	else if (angleRotation < -90 && (angleRotation > -180 || angleRotation == 180))
+	else if (angleRotation < -90 && angleRotation >= -180)
 	{
-		velocityX = -((xV - angleRotation / mass) * 0.005);
-		velocityY = -(yV / mass-(-1/angleRotation));
+		if (angleRotation != -180)
+		{
+			velocityX = -((xV - angleRotation / mass) * 0.003);
+		}
+		else
+		{
+			velocityX = 0;
+		}
+		velocityY = -(yV / mass + (90 + angleRotation)) * 0.003;
 	}
 	//float velocityX = (xV+angleRotation / mass)*0.005;
 	//float velocityY = (yV-angleRotation / mass)*0.05;
