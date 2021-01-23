@@ -47,6 +47,7 @@ private:
 	Planet* earth;
 	Planet* moon;
 
+	bool game = false;
 	bool win = false;
 	bool winMoon = false;
 	

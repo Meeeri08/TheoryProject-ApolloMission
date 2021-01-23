@@ -37,8 +37,8 @@ bool Scene::Start()
 {
 	background = app->tex->Load("Assets/Textures/background_space.png");
 	texRocket = app->tex->Load("Assets/Textures/rocket.png");
-	texWin = app->tex->Load("Assets/Textures/win.png");
-	//app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
+	texWin = app->tex->Load("Assets/Textures/winText.png");
+	app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
 	
 	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(622, 460), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
 	earth = app->physicsEngine->CreatePlanet(Vec2(600, 900), 20, 350);
@@ -55,82 +55,87 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
-	if (app->physicsEngine->rocket->pos.y < -10450)
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) game = true;
+
+	if (game == true)
 	{
-		app->physicsEngine->rocket->pos.y = -10450;
-		//app->physicsEngine->rocket->acceleration.y = 0;
-		app->physicsEngine->rocket->velocity.y = 0;
-		app->physicsEngine->rocket->velocity.x = 0;
 
-	}
-	if (app->physicsEngine->rocket->pos.y > 480)
-	{
-		app->physicsEngine->rocket->pos.y = 480;
-		//app->physicsEngine->rocket->acceleration.y = 0;
-		app->physicsEngine->rocket->velocity.y = 0;
-		app->physicsEngine->rocket->velocity.x = 0;
-
-	}
-
-
-	if (app->physicsEngine->rocket->pos.x > 1244)
-	{
-		app->physicsEngine->rocket->pos.x = 1244;
-		//app->physicsEngine->rocket->acceleration.y = 0;
-		app->physicsEngine->rocket->velocity.x = 0;
-	}
-	if (app->physicsEngine->rocket->pos.x < 0)
-	{
-		app->physicsEngine->rocket->pos.x = 0;
-		//app->physicsEngine->rocket->acceleration.y = 0;
-		app->physicsEngine->rocket->velocity.x = 0;
-	}
-
-
-	/*if(app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		app->render->camera.y -= 1;
-
-	if(app->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-		app->render->camera.y += 1;
-
-	if(app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		app->render->camera.x -= 1;
-
-	if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		app->render->camera.x += 1;*/
-
-	//Rocket movement
-	if (!win)
-	{
-		if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-			app->physicsEngine->rocket->AddMomentumAngle(1.1f, -1.1f, app->physicsEngine->rocket->angle);
-
-		
-	}
-	
-	if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-	{
-		app->physicsEngine->rocket->angle -= 0.02f;
-		if (app->physicsEngine->rocket->angle < -180)
+		if (app->physicsEngine->rocket->pos.y < -10450)
 		{
-			app->physicsEngine->rocket->angle = 180;
+			app->physicsEngine->rocket->pos.y = -10450;
+			//app->physicsEngine->rocket->acceleration.y = 0;
+			app->physicsEngine->rocket->velocity.y = 0;
+			app->physicsEngine->rocket->velocity.x = 0;
+
+		}
+		if (app->physicsEngine->rocket->pos.y > 480)
+		{
+			app->physicsEngine->rocket->pos.y = 480;
+			//app->physicsEngine->rocket->acceleration.y = 0;
+			app->physicsEngine->rocket->velocity.y = 0;
+			app->physicsEngine->rocket->velocity.x = 0;
+
 		}
 
-	}
-	if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-	{
-		app->physicsEngine->rocket->angle += 0.02f;
-		if (app->physicsEngine->rocket->angle > 180)
+
+		if (app->physicsEngine->rocket->pos.x > 1244)
 		{
-			app->physicsEngine->rocket->angle = -180;
+			app->physicsEngine->rocket->pos.x = 1244;
+			//app->physicsEngine->rocket->acceleration.y = 0;
+			app->physicsEngine->rocket->velocity.x = 0;
 		}
+		if (app->physicsEngine->rocket->pos.x < 0)
+		{
+			app->physicsEngine->rocket->pos.x = 0;
+			//app->physicsEngine->rocket->acceleration.y = 0;
+			app->physicsEngine->rocket->velocity.x = 0;
+		}
+
+
+		/*if(app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+			app->render->camera.y -= 1;
+
+		if(app->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+			app->render->camera.y += 1;
+
+		if(app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+			app->render->camera.x -= 1;
+
+		if(app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+			app->render->camera.x += 1;*/
+
+			//Rocket movement
+		if (!win)
+		{
+			if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+				app->physicsEngine->rocket->AddMomentumAngle(1.1f, -1.1f, app->physicsEngine->rocket->angle);
+
+
+		}
+
+		if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		{
+			app->physicsEngine->rocket->angle -= 0.02f;
+			if (app->physicsEngine->rocket->angle < -180)
+			{
+				app->physicsEngine->rocket->angle = 180;
+			}
+
+		}
+		if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		{
+			app->physicsEngine->rocket->angle += 0.02f;
+			if (app->physicsEngine->rocket->angle > 180)
+			{
+				app->physicsEngine->rocket->angle = -180;
+			}
+		}
+		//Camera movement
+
+
+		if (app->physicsEngine->rocket->pos.y < 300) app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 300);
+
 	}
-	//Camera movement
-
-
-	if (app->physicsEngine->rocket->pos.y < 300) app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 300);
-	
-
 	//LOG("position of the rocket x = %.2f  y = %.2f", rocket->pos.x, rocket->pos.y);
 
 
@@ -147,22 +152,27 @@ bool Scene::PostUpdate()
 	
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
-	app->render->DrawTexture(background, 0, -10780);
 
-	if (!win) {
-		//SDL_Rect rect = currentAnimation->GetCurrentFrame();
-		app->render->DrawTexture(texRocket, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y,0, 1.0,app->physicsEngine->rocket->angle);
-	}
-	if (app->physicsEngine->rocket->pos.y <= -8500)
+	if (!game)  app->render->DrawTexture(texWin, 0, -0);
+	if (game)
 	{
-		winMoon = true;
-	}
-	if (winMoon && app->physicsEngine->rocket->pos.y >= 0)
-	{
-		app->render->DrawTexture(texWin, 400, 100);
-		win = true;
-	}
+		//app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
+		app->render->DrawTexture(background, 0, -10780);
 
+		if (!win) {
+			//SDL_Rect rect = currentAnimation->GetCurrentFrame();
+			app->render->DrawTexture(texRocket, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y, 0, 1.0, app->physicsEngine->rocket->angle);
+		}
+		if (app->physicsEngine->rocket->pos.y <= -8500)
+		{
+			winMoon = true;
+		}
+		if (winMoon && app->physicsEngine->rocket->pos.y >= 0)
+		{
+			app->render->DrawTexture(texWin, 0, 0);
+			win = true;
+		}
+	}
 	return ret;
 }
 
