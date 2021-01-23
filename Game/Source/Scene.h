@@ -43,6 +43,8 @@ private:
 	SDL_Texture* background;
 	SDL_Texture* texRocket;
 	SDL_Texture* texWin;
+	SDL_Texture* texIntro;
+	SDL_Texture* texTrampoline;
 
 	Planet* earth;
 	Planet* moon;
@@ -50,6 +52,9 @@ private:
 	bool game = false;
 	bool win = false;
 	bool winMoon = false;
+
+	bool springActive = false;
+	bool outTrampoline = false;
 	
 };
 

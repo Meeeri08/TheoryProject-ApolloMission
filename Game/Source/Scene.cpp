@@ -38,9 +38,11 @@ bool Scene::Start()
 	background = app->tex->Load("Assets/Textures/background_space.png");
 	texRocket = app->tex->Load("Assets/Textures/rocket.png");
 	texWin = app->tex->Load("Assets/Textures/winText.png");
+	texIntro = app->tex->Load("Assets/Textures/introText.png");
+	texTrampoline = app->tex->Load("Assets/Textures/trampoline.png");
 	app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
 	
-	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(622, 460), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
+	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(/*622*/815, 460), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
 	earth = app->physicsEngine->CreatePlanet(Vec2(600, 900), 20, 350);
 	//moon = app->physicsEngine->CreatePlanet(Vec2(600, -10800), 20, 300);
 	return true;
@@ -139,6 +141,26 @@ bool Scene::Update(float dt)
 	//LOG("position of the rocket x = %.2f  y = %.2f", rocket->pos.x, rocket->pos.y);
 
 
+	if (app->physicsEngine->rocket->pos.y <= 434) springActive = true;
+
+	//if (app->physicsEngine->rocket->pos.y > 454) springActive = false;
+
+	if (app->physicsEngine->rocket->pos.y <= 494 && app->physicsEngine->rocket->pos.y >= 434 && app->physicsEngine->rocket->pos.x < 882 && app->physicsEngine->rocket->pos.x > 761 && springActive && !outTrampoline)
+	{
+		
+		app->physicsEngine->rocket->velocity.y = -(app->physicsEngine->rocket->velocity.y/1.01);
+		outTrampoline = true;
+		if (app->physicsEngine->rocket->velocity.y > -1 && app->physicsEngine->rocket->velocity.y < 1)
+		{
+			outTrampoline = false;
+			springActive = false;
+		}
+	}
+
+	if (outTrampoline && app->physicsEngine->rocket->pos.y < 454) outTrampoline = false;
+
+
+	if (app->physicsEngine->rocket->pos.y > 454) springActive = false;
 
 	return true;
 }
@@ -153,11 +175,12 @@ bool Scene::PostUpdate()
 	if(app->input->GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
 		ret = false;
 
-	if (!game)  app->render->DrawTexture(texWin, 0, -0);
+	if (!game)  app->render->DrawTexture(texIntro, 0, -0);
 	if (game)
 	{
 		//app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
 		app->render->DrawTexture(background, 0, -10780);
+		app->render->DrawTexture(texTrampoline, 770, 480);
 
 		if (!win) {
 			//SDL_Rect rect = currentAnimation->GetCurrentFrame();
