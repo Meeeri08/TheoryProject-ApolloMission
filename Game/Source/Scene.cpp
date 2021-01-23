@@ -49,7 +49,7 @@ bool Scene::Start()
 	app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
 	
 	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(/*622*/815, 460), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
-	earth = app->physicsEngine->CreatePlanet(Vec2(600, 900), 20, 350);
+	//earth = app->physicsEngine->CreatePlanet(Vec2(600, 900), 20, 350);
 	//moon = app->physicsEngine->CreatePlanet(Vec2(600, -10800), 20, 300);
 	return true;
 }
@@ -65,7 +65,7 @@ bool Scene::Update(float dt)
 {
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) game = true;
 
-	if (game == true && !noFuel)
+	if (game == true)
 	{
 
 		if (app->physicsEngine->rocket->pos.y < -10450)
@@ -78,13 +78,16 @@ bool Scene::Update(float dt)
 		}
 		if (app->physicsEngine->rocket->pos.y > 480)
 		{
-			app->physicsEngine->rocket->pos.y = 480;
-			//app->physicsEngine->rocket->acceleration.y = 0;
-			app->physicsEngine->rocket->velocity.y = 0;
-			app->physicsEngine->rocket->velocity.x = 0;
-
+			/*if (app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895)
+			{*/
+				app->physicsEngine->rocket->pos.y = 480;
+				//app->physicsEngine->rocket->acceleration.y = 0;
+				app->physicsEngine->rocket->velocity.y = 0;
+				app->physicsEngine->rocket->velocity.x = 0;
+			/*}*/
 		}
 
+		
 
 		if (app->physicsEngine->rocket->pos.x > 1244)
 		{
@@ -137,10 +140,29 @@ bool Scene::Update(float dt)
 			noFuel = true;
 		}
 
-		//if (battery1Take || battery2Take || battery3Take || battery4Take)
-		//{
-		//	counter -= 50000;
-		//}
+		if (battery1Take && !battery1Taken)
+		{
+			counter -= 25000;
+			battery1Taken = true;
+		}
+
+		if ( battery2Take && !battery2Taken)
+		{
+			counter -= 25000;
+			battery2Taken = true;
+		}
+		if (battery3Take && !battery3Taken)
+		{
+			counter -= 25000;
+			battery3Taken = true;
+		}
+		if (battery4Take && !battery4Taken)
+		{
+			counter -= 25000;
+			battery4Taken = true;
+		}
+
+
 		/*if(app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 			app->render->camera.y -= 1;
 
@@ -156,15 +178,16 @@ bool Scene::Update(float dt)
 			//Rocket movement
 		if (!win)
 		{
-			if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+			if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && !noFuel)
 			{
 				app->physicsEngine->rocket->AddMomentumAngle(1.1f, -1.1f, app->physicsEngine->rocket->angle);
 				counter++;
+				
 			}
 
 		}
 
-		if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && !noFuel)
 		{
 			app->physicsEngine->rocket->angle -= 0.02f;
 			if (app->physicsEngine->rocket->angle < -180)
@@ -173,7 +196,7 @@ bool Scene::Update(float dt)
 			}
 
 		}
-		if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && !noFuel)
 		{
 			app->physicsEngine->rocket->angle += 0.02f;
 			if (app->physicsEngine->rocket->angle > 180)

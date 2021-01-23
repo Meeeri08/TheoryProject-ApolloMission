@@ -72,6 +72,10 @@ private:
 	bool battery3Take = false;
 	bool battery4Take = false;
 
+	bool battery1Taken = false;
+	bool battery2Taken = false;
+	bool battery3Taken = false;
+	bool battery4Taken = false;
 
 	bool springActive = false;
 	bool outTrampoline = false;
