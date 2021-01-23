@@ -40,6 +40,12 @@ bool Scene::Start()
 	texWin = app->tex->Load("Assets/Textures/winText.png");
 	texIntro = app->tex->Load("Assets/Textures/introText.png");
 	texTrampoline = app->tex->Load("Assets/Textures/trampoline.png");
+	texFullFuel = app->tex->Load("Assets/Textures/fullfuel.png");
+	texThreeFuel = app->tex->Load("Assets/Textures/threefuel.png");
+	texTwoFuel = app->tex->Load("Assets/Textures/twofuel.png");
+	texOneFuel = app->tex->Load("Assets/Textures/onefuel.png");
+	texNoFuel = app->tex->Load("Assets/Textures/nofuel.png");
+	texItemBattery = app->tex->Load("Assets/Textures/itemBattery.png");
 	app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
 	
 	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(/*622*/815, 460), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
@@ -59,7 +65,7 @@ bool Scene::Update(float dt)
 {
 	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) game = true;
 
-	if (game == true)
+	if (game == true && !noFuel)
 	{
 
 		if (app->physicsEngine->rocket->pos.y < -10450)
@@ -93,7 +99,48 @@ bool Scene::Update(float dt)
 			app->physicsEngine->rocket->velocity.x = 0;
 		}
 
+		///Fuel
+		if (counter <= 25000)
+		{
+			fullFuel = true;
+			threeFuel = false;
+			twoFuel = false;
+			oneFuel = false;
+			noFuel = false;
+		}
+		if (counter > 25000 && counter <= 50000) {
+			fullFuel = false;
+			threeFuel = true;
+			twoFuel = false;
+			oneFuel = false;
+			noFuel = false;
+		}
+		if (counter > 50000 && counter <= 75000) {
+			fullFuel = false;
+			threeFuel = false;
+			twoFuel = true;
+			oneFuel = false;
+			noFuel = false;
+		}
+		if (counter > 75000 && counter <= 100000) {
+			fullFuel = false;
+			threeFuel = false;
+			twoFuel = false;
+			oneFuel = true;
+			noFuel = false;
+		}
+		if (counter > 100000 && counter < 125000) {
+			fullFuel = false;
+			threeFuel = false;
+			twoFuel = false;
+			oneFuel = false;
+			noFuel = true;
+		}
 
+		//if (battery1Take || battery2Take || battery3Take || battery4Take)
+		//{
+		//	counter -= 50000;
+		//}
 		/*if(app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 			app->render->camera.y -= 1;
 
@@ -112,6 +159,7 @@ bool Scene::Update(float dt)
 			if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 			{
 				app->physicsEngine->rocket->AddMomentumAngle(1.1f, -1.1f, app->physicsEngine->rocket->angle);
+				counter++;
 			}
 
 		}
@@ -133,9 +181,33 @@ bool Scene::Update(float dt)
 				app->physicsEngine->rocket->angle = -180;
 			}
 		}
+		///betterys
+		if (app->physicsEngine->rocket->pos.y < -3420 && app->physicsEngine->rocket->pos.y > -3500)
+		{
+			if (app->physicsEngine->rocket->pos.x < 340 && app->physicsEngine->rocket->pos.x > 300)
+
+			battery1Take = true;
+		}
+		if (app->physicsEngine->rocket->pos.y < -4920 && app->physicsEngine->rocket->pos.y > -5000)
+		{
+			if (app->physicsEngine->rocket->pos.x < 540 && app->physicsEngine->rocket->pos.x > 500)
+
+				battery2Take = true;
+		}
+		if (app->physicsEngine->rocket->pos.y < -6420 && app->physicsEngine->rocket->pos.y > -6500)
+		{
+			if (app->physicsEngine->rocket->pos.x < 290 && app->physicsEngine->rocket->pos.x > 250)
+
+				battery3Take = true;
+		}
+		if (app->physicsEngine->rocket->pos.y < -8420 && app->physicsEngine->rocket->pos.y > -8500)
+		{
+			if (app->physicsEngine->rocket->pos.x < 740 && app->physicsEngine->rocket->pos.x > 700)
+
+				battery4Take = true;
+		}
+
 		//Camera movement
-
-
 		if (app->physicsEngine->rocket->pos.y < 300) app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 300);
 
 	}
@@ -201,6 +273,31 @@ bool Scene::PostUpdate()
 		if (!win) {
 			//SDL_Rect rect = currentAnimation->GetCurrentFrame();
 			app->render->DrawTexture(texRocket, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y, 0, 1.0, app->physicsEngine->rocket->angle);
+
+
+			if (fullFuel) app->render->DrawTexture(texFullFuel, -(app->render->camera.x-1100), -(app->render->camera.y-550));
+			if (threeFuel) app->render->DrawTexture(texThreeFuel, -(app->render->camera.x - 1100), -(app->render->camera.y - 550));
+			if (twoFuel) app->render->DrawTexture(texTwoFuel, -(app->render->camera.x - 1100), -(app->render->camera.y - 550));
+			if (oneFuel) app->render->DrawTexture(texOneFuel, -(app->render->camera.x - 1100), -(app->render->camera.y - 550));
+			if (noFuel) app->render->DrawTexture(texNoFuel, -(app->render->camera.x - 1100), -(app->render->camera.y - 550));
+
+			if (!battery1Take)
+			{
+				app->render->DrawTexture(texItemBattery, 300, -3500);
+			}
+			if (!battery2Take)
+			{
+				app->render->DrawTexture(texItemBattery, 500, -5000);
+			}
+			if (!battery3Take)
+			{
+				app->render->DrawTexture(texItemBattery, 250, -6500);
+			}
+			if (!battery4Take)
+			{
+				app->render->DrawTexture(texItemBattery, 700, -8500);
+			}
+
 		}
 		if (app->physicsEngine->rocket->pos.y <= -8500)
 		{

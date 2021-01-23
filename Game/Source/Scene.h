@@ -45,6 +45,20 @@ private:
 	SDL_Texture* texWin;
 	SDL_Texture* texIntro;
 	SDL_Texture* texTrampoline;
+	SDL_Texture* texFullFuel;
+	SDL_Texture* texThreeFuel;
+	SDL_Texture* texTwoFuel;
+	SDL_Texture* texOneFuel;
+	SDL_Texture* texNoFuel;
+	SDL_Texture* texItemBattery;
+
+	bool fullFuel;
+	bool threeFuel;
+	bool twoFuel;
+	bool oneFuel;
+	bool noFuel;
+
+	int counter;
 
 	Planet* earth;
 	Planet* moon;
@@ -52,6 +66,12 @@ private:
 	bool game = false;
 	bool win = false;
 	bool winMoon = false;
+
+	bool battery1Take = false;
+	bool battery2Take = false;
+	bool battery3Take = false;
+	bool battery4Take = false;
+
 
 	bool springActive = false;
 	bool outTrampoline = false;
