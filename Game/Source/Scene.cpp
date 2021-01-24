@@ -69,6 +69,20 @@ bool Scene::Update(float dt)
 	{
 		game = true;
 	}
+	count++;
+	//Bouyancy
+	if ((app->physicsEngine->rocket->pos.x <= 384 || app->physicsEngine->rocket->pos.x >= 895) && app->physicsEngine->rocket->pos.y > 480&&count>=100&&!water)
+	{
+		app->physicsEngine->rocket->velocity.y = app->physicsEngine->rocket->velocity.y - 40;
+		count = 0;
+		inWater = true;
+	}
+	else if (app->physicsEngine->rocket->pos.y <= 480 && inWater)
+	{
+		app->physicsEngine->rocket->velocity.y = 0;
+		water = true;
+	}
+
 
 	if (game == true && !dead && !almostDead)
 	{
@@ -78,14 +92,79 @@ bool Scene::Update(float dt)
 			app->physicsEngine->rocket->pos.y = 480;
 			felip = true;
 		}
-		if (app->physicsEngine->rocket->pos.y > 480 && app->physicsEngine->rocket->velocity.y > 800)
+
+		//terra mort per toofast
+		if (app->physicsEngine->rocket->pos.y > 480 && app->physicsEngine->rocket->velocity.y > 800 && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895)
 		{
 			tooFast = true;
-			dead = true;
-			//almostDead = true;
+
+			deadCounter++;
+		}
+		//terra mort per angle malament
+		if (app->physicsEngine->rocket->pos.y > 480 && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895 && (app->physicsEngine->rocket->angle > 35 || app->physicsEngine->rocket->angle < -35))
+		{
+			tooFast = true;
+
+			deadCounter++;
 		}
 
+		//lluna mort per toofast
+		if (app->physicsEngine->rocket->pos.y < -10450 && app->physicsEngine->rocket->velocity.y < -800 && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895)
+		{
+			tooFast = true;
 
+			deadCounter++;
+		}
+		//lluna mort per angle malament
+		if (app->physicsEngine->rocket->pos.y < -10450 && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895 && (app->physicsEngine->rocket->angle < 145 && app->physicsEngine->rocket->angle > -145))
+		{
+			tooFast = true;
+
+			deadCounter++;
+		}
+	
+
+		//angle correcte a la terra
+		if (app->physicsEngine->rocket->pos.y >= 480 && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895 && app->physicsEngine->rocket->angle < 35 && app->physicsEngine->rocket->angle > -35 && app->physicsEngine->rocket->angle !=0)
+		{
+			if (counterAngle > 50) {
+				if (app->physicsEngine->rocket->angle > 1)
+				{
+					app->physicsEngine->rocket->angle--;
+				}
+				else if (app->physicsEngine->rocket->angle < -1)
+				{
+					app->physicsEngine->rocket->angle++;
+				}
+				else
+				{
+					app->physicsEngine->rocket->angle = 0;
+				}
+				counterAngle = 0;
+			}
+			counterAngle++;
+		}
+
+		//angle correcte a la lluna
+		if (app->physicsEngine->rocket->pos.y <= -10450 && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895 && (app->physicsEngine->rocket->angle < -145 || app->physicsEngine->rocket->angle > 145) && app->physicsEngine->rocket->angle != 0)
+		{
+			if (counterAngle > 50) {
+				if (app->physicsEngine->rocket->angle < 179 && app->physicsEngine->rocket->angle > 145)
+				{
+					app->physicsEngine->rocket->angle++;
+				}
+				else if (app->physicsEngine->rocket->angle > -178 && app->physicsEngine->rocket->angle < -145)
+				{
+					app->physicsEngine->rocket->angle--;
+				}
+				else
+				{
+					app->physicsEngine->rocket->angle = 180;
+				}
+				counterAngle = 0;
+			}
+			counterAngle++;
+		}
 
 
 		if (app->physicsEngine->rocket->pos.y < -10450)
@@ -96,15 +175,12 @@ bool Scene::Update(float dt)
 			app->physicsEngine->rocket->velocity.x = 0;
 
 		}
-		if (app->physicsEngine->rocket->pos.y > 480 && !tooFast)
+		if (app->physicsEngine->rocket->pos.y > 480 && !tooFast && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895)
 		{
-			/*if (app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895)
-			{*/
-				app->physicsEngine->rocket->pos.y = 480;
-				//app->physicsEngine->rocket->acceleration.y = 0;
-				app->physicsEngine->rocket->velocity.y = 0;
-				app->physicsEngine->rocket->velocity.x = 0;
-			/*}*/
+			app->physicsEngine->rocket->pos.y = 480;
+			//app->physicsEngine->rocket->acceleration.y = 0;
+			app->physicsEngine->rocket->velocity.y = 0;
+			app->physicsEngine->rocket->velocity.x = 0;
 		}
 
 		
@@ -186,7 +262,7 @@ bool Scene::Update(float dt)
 			dead = true;
 		}
 
-		if (noFuel) 
+		if (noFuel||tooFast) 
 		{
 			deadCounter++;
 		}
@@ -209,7 +285,7 @@ bool Scene::Update(float dt)
 			//Rocket movement
 		if (!win)
 		{
-			if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && !noFuel)
+			if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT && !noFuel && !inWater)
 			{
 				app->physicsEngine->rocket->AddMomentumAngle(1.1f, -1.1f, app->physicsEngine->rocket->angle);
 				counter++;
@@ -218,7 +294,7 @@ bool Scene::Update(float dt)
 
 		}
 
-		if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && !noFuel)
+		if (app->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT && !noFuel && !inWater)
 		{
 			app->physicsEngine->rocket->angle -= 0.02f;
 			if (app->physicsEngine->rocket->angle < -180)
@@ -227,7 +303,7 @@ bool Scene::Update(float dt)
 			}
 
 		}
-		if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && !noFuel)
+		if (app->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && !noFuel && !inWater)
 		{
 			app->physicsEngine->rocket->angle += 0.02f;
 			if (app->physicsEngine->rocket->angle > 180)
@@ -268,8 +344,10 @@ bool Scene::Update(float dt)
 
 	if (dead || win)
 	{
+		HalfCleanUp();
 		if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 		{
+			CleanUp();
 			Restart();
 		}
 	}
@@ -313,6 +391,16 @@ bool Scene::Update(float dt)
 
 	if (app->physicsEngine->rocket->pos.y > 454) springActive = false;
 
+
+
+	
+
+
+
+
+
+
+
 	return true;
 }
 // Called each loop iteration
@@ -331,6 +419,9 @@ bool Scene::PostUpdate()
 		//app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
 		app->render->DrawTexture(background, 0, -10780);
 		app->render->DrawTexture(texTrampoline, 770, 480);
+
+
+
 
 		if (!win) 
 		{
@@ -378,14 +469,51 @@ bool Scene::PostUpdate()
 			app->physicsEngine->rocket->pos.y = 600;
 
 			app->render->camera.y = -600;
+
+			app->tex->UnLoad(texNoFuel);
+
 			app->render->DrawTexture(texLose, 0, app->physicsEngine->rocket->pos.y);
 		}
+
+		if (water)
+		{
+			app->tex->UnLoad(texRocket);
+			app->render->DrawTexture(texExplosion, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y); //explosio del coet quan mor per aigua
+			app->physicsEngine->rocket->velocity.x = 0;
+
+		}
+		if (water && count >= 5000)
+		{
+			dead = true;
+		}
+
+		if (noFuel) 
+		{
+			app->physicsEngine->rocket->velocity.x = 0;
+			app->physicsEngine->rocket->velocity.y = 0;
+			app->tex->UnLoad(texRocket);
+
+			app->render->DrawTexture(texNoFuel, -(app->render->camera.x - 600), -(app->render->camera.y - 250)); //posar una textura de que sha quedat sense gasoil diferent o algo
+
+		}
+
+
+		if (tooFast)
+		{
+			app->physicsEngine->rocket->velocity.x = 0;
+			app->physicsEngine->rocket->velocity.y = 0;
+			app->tex->UnLoad(texRocket);
+			app->render->DrawTexture(texExplosion, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y);
+		}
+
 	}
 	return ret;
 }
 
 bool Scene::Restart()
 {
+	Start();
+
 	felip = false;
 	tooFast = false;
 	fullFuel = false;
@@ -393,7 +521,10 @@ bool Scene::Restart()
 	twoFuel = false;
 	oneFuel = false;
 	noFuel = false;
-
+	water = false;
+	inWater = false;
+	count = 0;
+	counterAngle = 0;
 	explosionCounter = 0;
 	counter = 0;
 	deadCounter = 0;
@@ -432,6 +563,40 @@ bool Scene::Restart()
 bool Scene::CleanUp()
 {
 	LOG("Freeing scene");
+	
+	app->tex->UnLoad(background);
 	app->tex->UnLoad(texRocket);
+	app->tex->UnLoad(texWin);
+	app->tex->UnLoad(texLose);
+	app->tex->UnLoad(texIntro);
+	app->tex->UnLoad(texTrampoline);
+	app->tex->UnLoad(texFullFuel);
+	app->tex->UnLoad(texThreeFuel);
+	app->tex->UnLoad(texTwoFuel);
+	app->tex->UnLoad(texOneFuel);
+	app->tex->UnLoad(texNoFuel);
+	app->tex->UnLoad(texItemBattery);
+	app->tex->UnLoad(texExplosion);
+
+
+	return true;
+}
+
+
+
+bool Scene::HalfCleanUp()
+{
+	LOG("Freeing scene");
+
+	app->tex->UnLoad(texRocket);
+	//app->tex->UnLoad(texFullFuel);
+	//app->tex->UnLoad(texThreeFuel);
+	//app->tex->UnLoad(texTwoFuel);
+	//app->tex->UnLoad(texOneFuel);
+	//app->tex->UnLoad(texNoFuel);
+	app->tex->UnLoad(texItemBattery);
+	app->tex->UnLoad(texExplosion);
+
+
 	return true;
 }

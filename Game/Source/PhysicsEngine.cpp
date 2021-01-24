@@ -68,11 +68,11 @@ void PhysicsEngine::ApplyGravity()
 		item = item->next;
 	}*/
 
-	if (rocket->pos.y <= -2100 && rocket->pos.y > -7100)
+	if (rocket->pos.y <= -2100 && rocket->pos.y > -8800)
 	{
 
 	}
-	else if (rocket->pos.y <= -7100)
+	else if (rocket->pos.y <= -8800)
 	{
 		rocket->velocity -= gravityMoon;
 

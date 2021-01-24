@@ -40,6 +40,7 @@ public:
 
 	// Called before quitting
 	bool CleanUp();
+	bool HalfCleanUp();
 
 private:
 	SDL_Texture* background;
@@ -90,7 +91,13 @@ private:
 	bool springActive = false;
 	bool outTrampoline = false;
 	bool prova = false;
-	
+	int count = 0;
+	bool water = false;
+	bool inWater = false;
+
+
+	int counterAngle = 0;
+
 };
 
 #endif // __SCENE_H__
