@@ -105,6 +105,7 @@ private:
 	uint fuelUpFx;
 	uint outOfFuelFx;
 	uint jumpFx;
+	uint splashFx;
 
 };
 

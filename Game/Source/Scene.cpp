@@ -57,6 +57,7 @@ bool Scene::Start()
 	fuelUpFx = app->audio->LoadFx("Assets/Audio/Fx/fuelUp.wav");
 	outOfFuelFx = app->audio->LoadFx("Assets/Audio/Fx/outOfFuel.wav");
 	jumpFx = app->audio->LoadFx("Assets/Audio/Fx/Jump.wav");
+	splashFx = app->audio->LoadFx("Assets/Audio/Fx/splash.wav");
 
 	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(622, 480), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
 	//earth = app->physicsEngine->CreatePlanet(Vec2(600, 900), 20, 350);
@@ -84,6 +85,7 @@ bool Scene::Update(float dt)
 		app->physicsEngine->rocket->velocity.y = app->physicsEngine->rocket->velocity.y - 40;
 		count = 0;
 		inWater = true;
+		app->audio->PlayFx(splashFx);
 	}
 	else if (app->physicsEngine->rocket->pos.y <= 480 && inWater)
 	{
