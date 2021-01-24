@@ -31,7 +31,8 @@ public:
 	Vec2 acceleration;
 	float f;
 	float angle;
-
+	float limitVelocityUp = -1000.0f;
+	float limitVelocityDown = 1000.0f;
 public:
 
 	void launchRocket();

@@ -38,6 +38,7 @@ bool Scene::Start()
 	background = app->tex->Load("Assets/Textures/background_space.png");
 	texRocket = app->tex->Load("Assets/Textures/rocket.png");
 	texWin = app->tex->Load("Assets/Textures/winText.png");
+	texLose = app->tex->Load("Assets/Textures/loseText.png");
 	texIntro = app->tex->Load("Assets/Textures/introText.png");
 	texTrampoline = app->tex->Load("Assets/Textures/trampoline.png");
 	texFullFuel = app->tex->Load("Assets/Textures/fullfuel.png");
@@ -46,9 +47,10 @@ bool Scene::Start()
 	texOneFuel = app->tex->Load("Assets/Textures/onefuel.png");
 	texNoFuel = app->tex->Load("Assets/Textures/nofuel.png");
 	texItemBattery = app->tex->Load("Assets/Textures/itemBattery.png");
+	texExplosion = app->tex->Load("Assets/Textures/explode.png");
 	app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
 	
-	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(/*622*/815, 460), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
+	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(622, 480), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
 	//earth = app->physicsEngine->CreatePlanet(Vec2(600, 900), 20, 350);
 	//moon = app->physicsEngine->CreatePlanet(Vec2(600, -10800), 20, 300);
 	return true;
@@ -63,10 +65,28 @@ bool Scene::PreUpdate()
 // Called each loop iteration
 bool Scene::Update(float dt)
 {
-	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN) game = true;
-
-	if (game == true)
+	if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 	{
+		game = true;
+	}
+
+	if (game == true && !dead && !almostDead)
+	{
+		if (felip == false)
+		{
+			app->physicsEngine->rocket->velocity.y = 0;
+			app->physicsEngine->rocket->pos.y = 480;
+			felip = true;
+		}
+		if (app->physicsEngine->rocket->pos.y > 480 && app->physicsEngine->rocket->velocity.y > 800)
+		{
+			tooFast = true;
+			dead = true;
+			//almostDead = true;
+		}
+
+
+
 
 		if (app->physicsEngine->rocket->pos.y < -10450)
 		{
@@ -76,7 +96,7 @@ bool Scene::Update(float dt)
 			app->physicsEngine->rocket->velocity.x = 0;
 
 		}
-		if (app->physicsEngine->rocket->pos.y > 480)
+		if (app->physicsEngine->rocket->pos.y > 480 && !tooFast)
 		{
 			/*if (app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895)
 			{*/
@@ -161,8 +181,19 @@ bool Scene::Update(float dt)
 			counter -= 25000;
 			battery4Taken = true;
 		}
+		if (app->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
+		{
+			dead = true;
+		}
 
-
+		if (noFuel) 
+		{
+			deadCounter++;
+		}
+		if (deadCounter >= 10000)
+		{
+			dead = true;
+		}
 		/*if(app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 			app->render->camera.y -= 1;
 
@@ -205,7 +236,7 @@ bool Scene::Update(float dt)
 			}
 		}
 		///betterys
-		if (app->physicsEngine->rocket->pos.y < -3420 && app->physicsEngine->rocket->pos.y > -3500)
+		if (app->physicsEngine->rocket->pos.y  < -3420 && app->physicsEngine->rocket->pos.y > -3500)
 		{
 			if (app->physicsEngine->rocket->pos.x < 340 && app->physicsEngine->rocket->pos.x > 300)
 
@@ -231,8 +262,16 @@ bool Scene::Update(float dt)
 		}
 
 		//Camera movement
-		if (app->physicsEngine->rocket->pos.y < 300) app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 300);
+		if (app->physicsEngine->rocket->pos.y < 300 && !noFuel) app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 300);
 
+	}
+
+	if (dead || win)
+	{
+		if (app->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
+		{
+			Restart();
+		}
 	}
 	//LOG("position of the rocket x = %.2f  y = %.2f", rocket->pos.x, rocket->pos.y);
 
@@ -293,9 +332,11 @@ bool Scene::PostUpdate()
 		app->render->DrawTexture(background, 0, -10780);
 		app->render->DrawTexture(texTrampoline, 770, 480);
 
-		if (!win) {
-			//SDL_Rect rect = currentAnimation->GetCurrentFrame();
-			app->render->DrawTexture(texRocket, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y, 0, 1.0, app->physicsEngine->rocket->angle);
+		if (!win) 
+		{
+
+			/*if(!almostDead)*/ app->render->DrawTexture(texRocket, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y, 0, 1.0, app->physicsEngine->rocket->angle);
+			//if(almostDead) app->render->DrawTexture(texExplosion, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y);
 
 
 			if (fullFuel) app->render->DrawTexture(texFullFuel, -(app->render->camera.x-1100), -(app->render->camera.y-550));
@@ -322,17 +363,69 @@ bool Scene::PostUpdate()
 			}
 
 		}
+
 		if (app->physicsEngine->rocket->pos.y <= -8500)
 		{
 			winMoon = true;
 		}
-		if (winMoon && app->physicsEngine->rocket->pos.y >= 0)
+		if (winMoon && app->physicsEngine->rocket->pos.y >= 480 && !tooFast)
 		{
 			app->render->DrawTexture(texWin, 0, 0);
 			win = true;
 		}
+		if (dead && win|| dead && !win)
+		{
+			app->physicsEngine->rocket->pos.y = 600;
+
+			app->render->camera.y = -600;
+			app->render->DrawTexture(texLose, 0, app->physicsEngine->rocket->pos.y);
+		}
 	}
 	return ret;
+}
+
+bool Scene::Restart()
+{
+	felip = false;
+	tooFast = false;
+	fullFuel = false;
+	threeFuel = false;
+	twoFuel = false;
+	oneFuel = false;
+	noFuel = false;
+
+	explosionCounter = 0;
+	counter = 0;
+	deadCounter = 0;
+
+	app->render->camera.y = 0;
+	app->physicsEngine->rocket->velocity.y = 0;
+	app->physicsEngine->rocket->pos.x = 622;
+	app->physicsEngine->rocket->pos.y = 461;
+	app->physicsEngine->rocket-> angle = 0;
+
+	game = false;
+	win = false;
+	winMoon = false;
+	dead = false;
+	explosion = false;
+	almostDead = false;
+	battery1Take = false;
+	battery2Take = false;
+	battery3Take = false;
+	battery4Take = false;
+
+	battery1Taken = false;
+	battery2Taken = false;
+	battery3Taken = false;
+	battery4Taken = false;
+
+	springActive = false;
+	outTrampoline = false;
+	prova = false;
+
+	return true;
+
 }
 
 // Called before quitting

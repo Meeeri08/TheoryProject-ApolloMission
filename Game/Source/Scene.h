@@ -33,6 +33,8 @@ public:
 	// Called each loop iteration
 	bool Update(float dt);
 
+	bool Restart();
+
 	// Called before all Updates
 	bool PostUpdate();
 
@@ -43,6 +45,7 @@ private:
 	SDL_Texture* background;
 	SDL_Texture* texRocket;
 	SDL_Texture* texWin;
+	SDL_Texture* texLose;
 	SDL_Texture* texIntro;
 	SDL_Texture* texTrampoline;
 	SDL_Texture* texFullFuel;
@@ -51,22 +54,29 @@ private:
 	SDL_Texture* texOneFuel;
 	SDL_Texture* texNoFuel;
 	SDL_Texture* texItemBattery;
+	SDL_Texture* texExplosion;
 
-	bool fullFuel;
-	bool threeFuel;
-	bool twoFuel;
-	bool oneFuel;
-	bool noFuel;
+	bool fullFuel = false;
+	bool threeFuel = false;
+	bool twoFuel = false;
+	bool oneFuel = false;
+	bool noFuel = false;
 
-	int counter;
-
+	int counter = 0;
+	int deadCounter = 0;
+	int explosionCounter = 0;
 	Planet* earth;
 	Planet* moon;
+
+	bool tooFast = false;
+	bool felip = false;
+	bool explosion = false;
 
 	bool game = false;
 	bool win = false;
 	bool winMoon = false;
-
+	bool dead = false;
+	bool almostDead = false;
 	bool battery1Take = false;
 	bool battery2Take = false;
 	bool battery3Take = false;
