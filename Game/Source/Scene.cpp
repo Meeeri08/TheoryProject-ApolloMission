@@ -37,7 +37,7 @@ bool Scene::Awake()
 // Called before the first frame
 bool Scene::Start()
 {
-	background = app->tex->Load("Assets/Textures/background_space.png");
+	background = app->tex->Load("Assets/Textures/background_space_prova.png");
 	texRocket = app->tex->Load("Assets/Textures/rocket.png");
 	texRocketUp = app->tex->Load("Assets/Textures/rocketUp.png");
 	texWin = app->tex->Load("Assets/Textures/winText.png");
@@ -406,7 +406,15 @@ bool Scene::Update(float dt)
 
 
 		//Camera movement
-		if (app->physicsEngine->rocket->pos.y < 300 && !noFuel) app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 300);
+		if (app->physicsEngine->rocket->pos.y < 300 && !noFuel)
+		{
+			app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 300);
+
+		}
+		if (app->physicsEngine->rocket->pos.y > 480 && (app->physicsEngine->rocket->pos.x <= 384 || app->physicsEngine->rocket->pos.x >= 895) && !noFuel)
+		{
+			app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 480);
+		}
 
 	}
 
