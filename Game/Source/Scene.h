@@ -56,6 +56,8 @@ private:
 	SDL_Texture* texNoFuel;
 	SDL_Texture* texItemBattery;
 	SDL_Texture* texExplosion;
+	SDL_Texture* texDeadFuel;
+	SDL_Texture* texDeadWater;
 
 	bool fullFuel = false;
 	bool threeFuel = false;
@@ -96,7 +98,13 @@ private:
 	bool inWater = false;
 
 
+
 	int counterAngle = 0;
+
+	uint explosionFx;
+	uint fuelUpFx;
+	uint outOfFuelFx;
+	uint jumpFx;
 
 };
 

@@ -48,8 +48,16 @@ bool Scene::Start()
 	texNoFuel = app->tex->Load("Assets/Textures/nofuel.png");
 	texItemBattery = app->tex->Load("Assets/Textures/itemBattery.png");
 	texExplosion = app->tex->Load("Assets/Textures/explode.png");
-	app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
+	texDeadFuel = app->tex->Load("Assets/Textures/deadFuel.png");
+	texDeadWater = app->tex->Load("Assets/Textures/splashOut.png");
+
+	app->audio->PlayMusic("Assets/Audio/Music/outer_space.ogg");
 	
+	explosionFx = app->audio->LoadFx("Assets/Audio/Fx/explosion.wav");
+	fuelUpFx = app->audio->LoadFx("Assets/Audio/Fx/fuelUp.wav");
+	outOfFuelFx = app->audio->LoadFx("Assets/Audio/Fx/outOfFuel.wav");
+	jumpFx = app->audio->LoadFx("Assets/Audio/Fx/Jump.wav");
+
 	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(622, 480), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
 	//earth = app->physicsEngine->CreatePlanet(Vec2(600, 900), 20, 350);
 	//moon = app->physicsEngine->CreatePlanet(Vec2(600, -10800), 20, 300);
@@ -99,6 +107,7 @@ bool Scene::Update(float dt)
 			tooFast = true;
 
 			deadCounter++;
+			app->audio->PlayFx(explosionFx);
 		}
 		//terra mort per angle malament
 		if (app->physicsEngine->rocket->pos.y > 480 && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895 && (app->physicsEngine->rocket->angle > 35 || app->physicsEngine->rocket->angle < -35))
@@ -106,6 +115,7 @@ bool Scene::Update(float dt)
 			tooFast = true;
 
 			deadCounter++;
+			app->audio->PlayFx(explosionFx);
 		}
 
 		//lluna mort per toofast
@@ -114,6 +124,7 @@ bool Scene::Update(float dt)
 			tooFast = true;
 
 			deadCounter++;
+			app->audio->PlayFx(explosionFx);
 		}
 		//lluna mort per angle malament
 		if (app->physicsEngine->rocket->pos.y < -10450 && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895 && (app->physicsEngine->rocket->angle < 145 && app->physicsEngine->rocket->angle > -145))
@@ -121,6 +132,7 @@ bool Scene::Update(float dt)
 			tooFast = true;
 
 			deadCounter++;
+			app->audio->PlayFx(explosionFx);
 		}
 	
 
@@ -234,28 +246,33 @@ bool Scene::Update(float dt)
 			twoFuel = false;
 			oneFuel = false;
 			noFuel = true;
+			app->audio->PlayFx(outOfFuelFx);
 		}
 
 		if (battery1Take && !battery1Taken)
 		{
 			counter -= 25000;
 			battery1Taken = true;
+			app->audio->PlayFx(fuelUpFx);
 		}
 
 		if ( battery2Take && !battery2Taken)
 		{
 			counter -= 25000;
 			battery2Taken = true;
+			app->audio->PlayFx(fuelUpFx);
 		}
 		if (battery3Take && !battery3Taken)
 		{
 			counter -= 25000;
 			battery3Taken = true;
+			app->audio->PlayFx(fuelUpFx);
 		}
 		if (battery4Take && !battery4Taken)
 		{
 			counter -= 25000;
 			battery4Taken = true;
+			app->audio->PlayFx(fuelUpFx);
 		}
 		if (app->input->GetKey(SDL_SCANCODE_P) == KEY_DOWN)
 		{
@@ -312,27 +329,27 @@ bool Scene::Update(float dt)
 			}
 		}
 		///betterys
-		if (app->physicsEngine->rocket->pos.y  < -3420 && app->physicsEngine->rocket->pos.y > -3500)
+		if (app->physicsEngine->rocket->pos.y  < -3410 && app->physicsEngine->rocket->pos.y > -3510)
 		{
-			if (app->physicsEngine->rocket->pos.x < 340 && app->physicsEngine->rocket->pos.x > 300)
+			if (app->physicsEngine->rocket->pos.x < 350 && app->physicsEngine->rocket->pos.x > 290)
 
 			battery1Take = true;
 		}
-		if (app->physicsEngine->rocket->pos.y < -4920 && app->physicsEngine->rocket->pos.y > -5000)
+		if (app->physicsEngine->rocket->pos.y < -4910 && app->physicsEngine->rocket->pos.y > -5010)
 		{
-			if (app->physicsEngine->rocket->pos.x < 540 && app->physicsEngine->rocket->pos.x > 500)
+			if (app->physicsEngine->rocket->pos.x < 530 && app->physicsEngine->rocket->pos.x > 490)
 
 				battery2Take = true;
 		}
-		if (app->physicsEngine->rocket->pos.y < -6420 && app->physicsEngine->rocket->pos.y > -6500)
+		if (app->physicsEngine->rocket->pos.y < -6410 && app->physicsEngine->rocket->pos.y > -6510)
 		{
-			if (app->physicsEngine->rocket->pos.x < 290 && app->physicsEngine->rocket->pos.x > 250)
+			if (app->physicsEngine->rocket->pos.x < 300 && app->physicsEngine->rocket->pos.x > 240)
 
 				battery3Take = true;
 		}
-		if (app->physicsEngine->rocket->pos.y < -8420 && app->physicsEngine->rocket->pos.y > -8500)
+		if (app->physicsEngine->rocket->pos.y < -8410 && app->physicsEngine->rocket->pos.y > -8510)
 		{
-			if (app->physicsEngine->rocket->pos.x < 740 && app->physicsEngine->rocket->pos.x > 700)
+			if (app->physicsEngine->rocket->pos.x < 750 && app->physicsEngine->rocket->pos.x > 690)
 
 				battery4Take = true;
 		}
@@ -368,6 +385,7 @@ bool Scene::Update(float dt)
 		if (!prova) {
 			float res = app->physicsEngine->rocket->velocity.y;
 			app->physicsEngine->rocket->velocity.y = -(app->physicsEngine->rocket->velocity.y / 1.01);
+			app->audio->PlayFx(jumpFx);
 			if (res < 100 && res>-100)
 			{
 				prova = true;
@@ -478,7 +496,7 @@ bool Scene::PostUpdate()
 		if (water)
 		{
 			app->tex->UnLoad(texRocket);
-			app->render->DrawTexture(texExplosion, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y); //explosio del coet quan mor per aigua
+			app->render->DrawTexture(texDeadWater, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y+20); //explosio del coet quan mor per aigua
 			app->physicsEngine->rocket->velocity.x = 0;
 
 		}
@@ -493,7 +511,7 @@ bool Scene::PostUpdate()
 			app->physicsEngine->rocket->velocity.y = 0;
 			app->tex->UnLoad(texRocket);
 
-			app->render->DrawTexture(texNoFuel, -(app->render->camera.x - 600), -(app->render->camera.y - 250)); //posar una textura de que sha quedat sense gasoil diferent o algo
+			app->render->DrawTexture(texDeadFuel, -(app->render->camera.x - 600), -(app->render->camera.y - 250)); //posar una textura de que sha quedat sense gasoil diferent o algo
 
 		}
 
@@ -577,6 +595,8 @@ bool Scene::CleanUp()
 	app->tex->UnLoad(texNoFuel);
 	app->tex->UnLoad(texItemBattery);
 	app->tex->UnLoad(texExplosion);
+	app->tex->UnLoad(texDeadWater);
+	app->tex->UnLoad(texDeadFuel);
 
 
 	return true;
@@ -596,7 +616,7 @@ bool Scene::HalfCleanUp()
 	//app->tex->UnLoad(texNoFuel);
 	app->tex->UnLoad(texItemBattery);
 	app->tex->UnLoad(texExplosion);
-
-
+	app->tex->UnLoad(texDeadWater);
+	app->tex->UnLoad(texDeadFuel);
 	return true;
 }
