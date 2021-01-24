@@ -101,7 +101,7 @@ private:
 	bool water = false;
 	bool inWater = false;
 
-
+	bool firstJump = false;
 
 	int counterAngle = 0;
 

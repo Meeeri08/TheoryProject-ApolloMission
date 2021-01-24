@@ -110,7 +110,7 @@ bool Scene::Update(float dt)
 		if (app->physicsEngine->rocket->pos.y > 480 && app->physicsEngine->rocket->velocity.y > 800 && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895)
 		{
 			tooFast = true;
-
+			win = false;
 			deadCounter++;
 			app->audio->PlayFx(explosionFx);
 		}
@@ -384,11 +384,19 @@ bool Scene::Update(float dt)
 	//LOG("position of the rocket x = %.2f  y = %.2f", rocket->pos.x, rocket->pos.y);
 
 
+
+	//SPRING
 	if (app->physicsEngine->rocket->pos.y <= 434) springActive = true;
 
 	//if (app->physicsEngine->rocket->pos.y > 454) springActive = false;
 
-	if (app->physicsEngine->rocket->pos.y <= 494 && app->physicsEngine->rocket->pos.y >= 434 && app->physicsEngine->rocket->pos.x < 882 && app->physicsEngine->rocket->pos.x > 761 && springActive && !outTrampoline)
+	if (!firstJump && app->physicsEngine->rocket->pos.y <= 494 && app->physicsEngine->rocket->pos.y >= 434 && app->physicsEngine->rocket->pos.x < 882 && app->physicsEngine->rocket->pos.x > 761 && springActive && !outTrampoline)
+	{
+		app->physicsEngine->rocket->velocity.y = -(app->physicsEngine->rocket->velocity.y / 1.01);
+		firstJump = true;
+	}
+
+	if (firstJump && app->physicsEngine->rocket->pos.y <= 494 && app->physicsEngine->rocket->pos.y >= 434 && app->physicsEngine->rocket->pos.x < 882 && app->physicsEngine->rocket->pos.x > 761 && springActive && !outTrampoline)
 	{
 		if (prova && app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 		{
@@ -491,7 +499,7 @@ bool Scene::PostUpdate()
 
 		}
 
-		if (app->physicsEngine->rocket->pos.y <= -8500)
+		if (app->physicsEngine->rocket->pos.y <= -10449)
 		{
 			winMoon = true;
 		}
@@ -500,7 +508,7 @@ bool Scene::PostUpdate()
 			app->render->DrawTexture(texWin, 0, 0);
 			win = true;
 		}
-		if (dead && win|| dead && !win)
+		if (dead && win || dead && !win)
 		{
 			app->physicsEngine->rocket->pos.y = 600;
 
@@ -544,7 +552,6 @@ bool Scene::PostUpdate()
 			app->physicsEngine->rocket->velocity.y = 0;
 			app->tex->UnLoad(texRocket);
 			app->tex->UnLoad(texRocketUp);
-
 			app->render->DrawTexture(texExplosion, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y);
 		}
 
@@ -570,6 +577,7 @@ bool Scene::Restart()
 	explosionCounter = 0;
 	counter = 0;
 	deadCounter = 0;
+	firstJump = 0;
 
 	app->render->camera.y = 0;
 	app->physicsEngine->rocket->velocity.y = 0;
