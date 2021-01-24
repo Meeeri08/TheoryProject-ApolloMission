@@ -45,6 +45,7 @@ public:
 private:
 	SDL_Texture* background;
 	SDL_Texture* texRocket;
+	SDL_Texture* texRocketUp;
 	SDL_Texture* texWin;
 	SDL_Texture* texLose;
 	SDL_Texture* texIntro;
@@ -58,6 +59,9 @@ private:
 	SDL_Texture* texExplosion;
 	SDL_Texture* texDeadFuel;
 	SDL_Texture* texDeadWater;
+
+
+
 
 	bool fullFuel = false;
 	bool threeFuel = false;

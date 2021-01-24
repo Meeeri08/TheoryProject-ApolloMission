@@ -17,6 +17,8 @@
 Scene::Scene() : Module()
 {
 	name.Create("scene");
+
+
 }
 
 // Destructor
@@ -37,6 +39,7 @@ bool Scene::Start()
 {
 	background = app->tex->Load("Assets/Textures/background_space.png");
 	texRocket = app->tex->Load("Assets/Textures/rocket.png");
+	texRocketUp = app->tex->Load("Assets/Textures/rocketUp.png");
 	texWin = app->tex->Load("Assets/Textures/winText.png");
 	texLose = app->tex->Load("Assets/Textures/loseText.png");
 	texIntro = app->tex->Load("Assets/Textures/introText.png");
@@ -446,9 +449,14 @@ bool Scene::PostUpdate()
 		if (!win) 
 		{
 
-			/*if(!almostDead)*/ app->render->DrawTexture(texRocket, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y, 0, 1.0, app->physicsEngine->rocket->angle);
-			//if(almostDead) app->render->DrawTexture(texExplosion, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y);
-
+			
+			if (app->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+			{
+				app->render->DrawTexture(texRocketUp, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y, 0, 1.0, app->physicsEngine->rocket->angle);
+			}
+			else {
+				app->render->DrawTexture(texRocket, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y, 0, 1.0, app->physicsEngine->rocket->angle);
+			}
 
 			if (fullFuel) app->render->DrawTexture(texFullFuel, -(app->render->camera.x-1100), -(app->render->camera.y-550));
 			if (threeFuel) app->render->DrawTexture(texThreeFuel, -(app->render->camera.x - 1100), -(app->render->camera.y - 550));
