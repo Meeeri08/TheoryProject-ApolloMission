@@ -53,6 +53,7 @@ bool Scene::Start()
 	texExplosion = app->tex->Load("Assets/Textures/explode.png");
 	texDeadFuel = app->tex->Load("Assets/Textures/deadFuel.png");
 	texDeadWater = app->tex->Load("Assets/Textures/splashOut.png");
+	texSpaceship = app->tex->Load("Assets/Textures/spaceship.png");
 
 	app->audio->PlayMusic("Assets/Audio/Music/outer_space.ogg");
 	
@@ -61,6 +62,7 @@ bool Scene::Start()
 	outOfFuelFx = app->audio->LoadFx("Assets/Audio/Fx/outOfFuel.wav");
 	jumpFx = app->audio->LoadFx("Assets/Audio/Fx/Jump.wav");
 	splashFx = app->audio->LoadFx("Assets/Audio/Fx/splash.wav");
+	winFx = app->audio->LoadFx("Assets/Audio/Fx/winTone.wav");
 
 	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(622, 480), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
 	//earth = app->physicsEngine->CreatePlanet(Vec2(600, 900), 20, 350);
@@ -292,7 +294,7 @@ bool Scene::Update(float dt)
 			dead = true;
 		}
 
-		if (noFuel||tooFast) 
+		if (noFuel||tooFast||spaceship) 
 		{
 			deadCounter++;
 		}
@@ -367,6 +369,28 @@ bool Scene::Update(float dt)
 				battery4Take = true;
 		}
 
+
+		///Spaceship
+		if (app->physicsEngine->rocket->pos.y < -5310 && app->physicsEngine->rocket->pos.y > -5520)
+		{
+			if (app->physicsEngine->rocket->pos.x < 650 && app->physicsEngine->rocket->pos.x > 530)
+			{
+				spaceship = true;
+				app->audio->PlayFx(explosionFx);
+			}
+		}
+		if (app->physicsEngine->rocket->pos.y < -6300 && app->physicsEngine->rocket->pos.y > -6520)
+		{
+			if (app->physicsEngine->rocket->pos.x < 850 && app->physicsEngine->rocket->pos.x > 730)
+			{
+				spaceship = true;
+				app->audio->PlayFx(explosionFx);
+			}
+	
+		}
+
+
+
 		//Camera movement
 		if (app->physicsEngine->rocket->pos.y < 300 && !noFuel) app->render->camera.y = -(app->physicsEngine->rocket->pos.y - 300);
 
@@ -431,15 +455,6 @@ bool Scene::Update(float dt)
 	if (app->physicsEngine->rocket->pos.y > 454) springActive = false;
 
 
-
-	
-
-
-
-
-
-
-
 	return true;
 }
 // Called each loop iteration
@@ -459,8 +474,8 @@ bool Scene::PostUpdate()
 		app->render->DrawTexture(background, 0, -10780);
 		app->render->DrawTexture(texTrampoline, 770, 480);
 
-
-
+		app->render->DrawTexture(texSpaceship,550 , -5500);
+		app->render->DrawTexture(texSpaceship, 750, -6500);
 
 		if (!win) 
 		{
@@ -505,15 +520,15 @@ bool Scene::PostUpdate()
 		}
 		if (winMoon && app->physicsEngine->rocket->pos.y >= 480 && !tooFast)
 		{
+			app->audio->PlayFx(winFx);
 			app->render->DrawTexture(texWin, 0, 0);
 			win = true;
 		}
 		if (dead && win || dead && !win)
 		{
 			app->physicsEngine->rocket->pos.y = 600;
-
+			app->physicsEngine->rocket->pos.x = 622;
 			app->render->camera.y = -600;
-
 			app->tex->UnLoad(texNoFuel);
 
 			app->render->DrawTexture(texLose, 0, app->physicsEngine->rocket->pos.y);
@@ -544,7 +559,14 @@ bool Scene::PostUpdate()
 			app->render->DrawTexture(texDeadFuel, -(app->render->camera.x - 600), -(app->render->camera.y - 250)); //posar una textura de que sha quedat sense gasoil diferent o algo
 
 		}
-
+		if (spaceship)
+		{
+			app->physicsEngine->rocket->velocity.x = 0;
+			app->physicsEngine->rocket->velocity.y = 0;
+			app->tex->UnLoad(texRocket);
+			app->tex->UnLoad(texRocketUp);
+			app->render->DrawTexture(texExplosion, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y);
+		}
 
 		if (tooFast)
 		{
@@ -572,6 +594,9 @@ bool Scene::Restart()
 	noFuel = false;
 	water = false;
 	inWater = false;
+	spaceship = false;
+
+
 	count = 0;
 	counterAngle = 0;
 	explosionCounter = 0;
@@ -630,7 +655,7 @@ bool Scene::CleanUp()
 	app->tex->UnLoad(texExplosion);
 	app->tex->UnLoad(texDeadWater);
 	app->tex->UnLoad(texDeadFuel);
-
+	app->tex->UnLoad(texSpaceship);
 
 	return true;
 }

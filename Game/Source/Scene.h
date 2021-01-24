@@ -59,7 +59,7 @@ private:
 	SDL_Texture* texExplosion;
 	SDL_Texture* texDeadFuel;
 	SDL_Texture* texDeadWater;
-
+	SDL_Texture* texSpaceship;
 
 
 
@@ -78,6 +78,8 @@ private:
 	bool tooFast = false;
 	bool felip = false;
 	bool explosion = false;
+
+	bool spaceship = false;
 
 	bool game = false;
 	bool win = false;
@@ -110,7 +112,7 @@ private:
 	uint outOfFuelFx;
 	uint jumpFx;
 	uint splashFx;
-
+	uint winFx;
 };
 
 #endif // __SCENE_H__
