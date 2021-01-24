@@ -7,40 +7,12 @@
 
 Rocket::~Rocket()
 {
-	//idlAnim.PushBack({ 0, 0, 64, 85 });
 }
 
 void Rocket::launchRocket()
 {
 
 }
-//
-//bool Rocket::Awake()
-//{
-//	LOG("Loading Rocket");
-//	bool ret = true;
-//
-//	return ret;
-//}
-//
-//bool Rocket::Start()
-//{
-//	currentAnimation = &idlAnim;
-//	return true;
-//}
-//
-//
-//bool Rocket::Update()
-//{
-//
-//	return true;
-//}
-//
-//bool Rocket::PostUpdate()
-//{
-//	SDL_Rect rect = currentAnimation->GetCurrentFrame();
-//	return true;
-//}
 
 
 void Rocket::refillFuel()
@@ -103,8 +75,7 @@ void Rocket::AddMomentumAngle(float xV, float yV, float angleRotation)
 		}
 		velocityY = -(yV / mass + (90 + angleRotation)) * 0.003;
 	}
-	//float velocityX = (xV+angleRotation / mass)*0.005;
-	//float velocityY = (yV-angleRotation / mass)*0.05;
+
 
 
 	

@@ -106,7 +106,7 @@ private:
 	bool firstJump = false;
 
 	int counterAngle = 0;
-
+	int counterWin = 0;
 	uint explosionFx;
 	uint fuelUpFx;
 	uint outOfFuelFx;

@@ -65,8 +65,7 @@ bool Scene::Start()
 	winFx = app->audio->LoadFx("Assets/Audio/Fx/winTone.wav");
 
 	app->physicsEngine->rocket = app->physicsEngine->CreateRocket(Vec2(622, 480), 5, Vec2(0,0), 20, 10, 50.0f, 0.0f);
-	//earth = app->physicsEngine->CreatePlanet(Vec2(600, 900), 20, 350);
-	//moon = app->physicsEngine->CreatePlanet(Vec2(600, -10800), 20, 300);
+
 	return true;
 }
 
@@ -84,6 +83,7 @@ bool Scene::Update(float dt)
 		game = true;
 	}
 	count++;
+
 	//Bouyancy
 	if ((app->physicsEngine->rocket->pos.x <= 384 || app->physicsEngine->rocket->pos.x >= 895) && app->physicsEngine->rocket->pos.y > 480&&count>=100&&!water)
 	{
@@ -190,7 +190,6 @@ bool Scene::Update(float dt)
 		if (app->physicsEngine->rocket->pos.y < -10450 && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895)
 		{
 			app->physicsEngine->rocket->pos.y = -10450;
-			//app->physicsEngine->rocket->acceleration.y = 0;
 			app->physicsEngine->rocket->velocity.y = 0;
 			app->physicsEngine->rocket->velocity.x = 0;
 		}
@@ -205,7 +204,6 @@ bool Scene::Update(float dt)
 		if (app->physicsEngine->rocket->pos.y > 480 && !tooFast && app->physicsEngine->rocket->pos.x >= 384 && app->physicsEngine->rocket->pos.x <= 895)
 		{
 			app->physicsEngine->rocket->pos.y = 480;
-			//app->physicsEngine->rocket->acceleration.y = 0;
 			app->physicsEngine->rocket->velocity.y = 0;
 			app->physicsEngine->rocket->velocity.x = 0;
 		}
@@ -215,13 +213,11 @@ bool Scene::Update(float dt)
 		if (app->physicsEngine->rocket->pos.x > 1244)
 		{
 			app->physicsEngine->rocket->pos.x = 1244;
-			//app->physicsEngine->rocket->acceleration.y = 0;
 			app->physicsEngine->rocket->velocity.x = 0;
 		}
 		if (app->physicsEngine->rocket->pos.x < 0)
 		{
 			app->physicsEngine->rocket->pos.x = 0;
-			//app->physicsEngine->rocket->acceleration.y = 0;
 			app->physicsEngine->rocket->velocity.x = 0;
 		}
 
@@ -343,6 +339,24 @@ bool Scene::Update(float dt)
 				app->physicsEngine->rocket->angle = -180;
 			}
 		}
+
+		//Change limit velocity
+		if (app->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+		{
+			if (app->physicsEngine->rocket->limitVelocityDown == 1000.0f)
+			{
+				app->physicsEngine->rocket->limitVelocityDown = 100000.0f;
+				app->physicsEngine->rocket->limitVelocityUp = -100000.0f;
+			}
+			else
+			{
+				app->physicsEngine->rocket->limitVelocityDown = 1000.0f;
+				app->physicsEngine->rocket->limitVelocityUp = -1000.0f;
+			}
+		}
+
+
+
 		///batterys
 		if (app->physicsEngine->rocket->pos.y  < -3410 && app->physicsEngine->rocket->pos.y > -3510)
 		{
@@ -405,14 +419,12 @@ bool Scene::Update(float dt)
 			Restart();
 		}
 	}
-	//LOG("position of the rocket x = %.2f  y = %.2f", rocket->pos.x, rocket->pos.y);
 
 
 
 	//SPRING
 	if (app->physicsEngine->rocket->pos.y <= 434) springActive = true;
 
-	//if (app->physicsEngine->rocket->pos.y > 454) springActive = false;
 
 	if (!firstJump && app->physicsEngine->rocket->pos.y <= 494 && app->physicsEngine->rocket->pos.y >= 434 && app->physicsEngine->rocket->pos.x < 882 && app->physicsEngine->rocket->pos.x > 761 && springActive && !outTrampoline)
 	{
@@ -441,12 +453,7 @@ bool Scene::Update(float dt)
 		}
 		
 		outTrampoline = true;
-		//if (app->physicsEngine->rocket->velocity.y > -0.0002 && app->physicsEngine->rocket->velocity.y < 0.0002)
-		//{
-		//	outTrampoline = false;
-		//	springActive = false;
-		//	//app->physicsEngine->rocket->acceleration
-		//}
+
 	}
 
 	if (outTrampoline && app->physicsEngine->rocket->pos.y < 454) outTrampoline = false;
@@ -470,7 +477,6 @@ bool Scene::PostUpdate()
 	if (!game)  app->render->DrawTexture(texIntro, 0, -0);
 	if (game)
 	{
-		//app->audio->PlayMusic("Assets/Audio/Music/earth_scene.ogg");
 		app->render->DrawTexture(background, 0, -10780);
 		app->render->DrawTexture(texTrampoline, 770, 480);
 
@@ -520,9 +526,14 @@ bool Scene::PostUpdate()
 		}
 		if (winMoon && app->physicsEngine->rocket->pos.y >= 480 && !tooFast)
 		{
+			counterWin++;
+			if (counterWin >= 15000) 
+			{
+				app->render->DrawTexture(texWin, 0, 0);
+				win = true;
+			}
 			app->audio->PlayFx(winFx);
-			app->render->DrawTexture(texWin, 0, 0);
-			win = true;
+
 		}
 		if (dead && win || dead && !win)
 		{
@@ -539,7 +550,7 @@ bool Scene::PostUpdate()
 			app->tex->UnLoad(texRocket);
 			app->tex->UnLoad(texRocketUp);
 
-			app->render->DrawTexture(texDeadWater, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y+20); //explosio del coet quan mor per aigua
+			app->render->DrawTexture(texDeadWater, app->physicsEngine->rocket->pos.x, app->physicsEngine->rocket->pos.y+20);
 			app->physicsEngine->rocket->velocity.x = 0;
 
 		}
@@ -556,7 +567,7 @@ bool Scene::PostUpdate()
 			app->tex->UnLoad(texRocketUp);
 
 
-			app->render->DrawTexture(texDeadFuel, -(app->render->camera.x - 600), -(app->render->camera.y - 250)); //posar una textura de que sha quedat sense gasoil diferent o algo
+			app->render->DrawTexture(texDeadFuel, -(app->render->camera.x - 600), -(app->render->camera.y - 250));
 
 		}
 		if (spaceship)
@@ -595,6 +606,7 @@ bool Scene::Restart()
 	water = false;
 	inWater = false;
 	spaceship = false;
+	firstJump = false;
 
 
 	count = 0;
@@ -602,7 +614,7 @@ bool Scene::Restart()
 	explosionCounter = 0;
 	counter = 0;
 	deadCounter = 0;
-	firstJump = 0;
+	counterWin = 0;
 
 	app->render->camera.y = 0;
 	app->physicsEngine->rocket->velocity.y = 0;
@@ -668,11 +680,6 @@ bool Scene::HalfCleanUp()
 
 	app->tex->UnLoad(texRocket);
 	app->tex->UnLoad(texRocketUp);
-	//app->tex->UnLoad(texFullFuel);
-	//app->tex->UnLoad(texThreeFuel);
-	//app->tex->UnLoad(texTwoFuel);
-	//app->tex->UnLoad(texOneFuel);
-	//app->tex->UnLoad(texNoFuel);
 	app->tex->UnLoad(texItemBattery);
 	app->tex->UnLoad(texExplosion);
 	app->tex->UnLoad(texDeadWater);

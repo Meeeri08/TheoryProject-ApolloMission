@@ -12,17 +12,7 @@ public:
 	Rocket(){}
 	~Rocket();
 
-	//bool Awake();
 
-	//bool Start();
-
-	//bool Update();
-
-	//bool PostUpdate();
-
-	//Animation* currentAnimation = nullptr;
-
-	//Animation idlAnim;
 
 public:
 	int health;

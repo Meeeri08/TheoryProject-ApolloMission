@@ -58,15 +58,7 @@ void PhysicsEngine::IntegerVerlet(Vec2 *pos, Vec2 *v, Vec2 a, float dt)
 
 void PhysicsEngine::ApplyGravity()
 {
-	/*ListItem<Body*> *item = bodyList.start;
 
-	while (item != nullptr)
-	{
-		
-		item->data->velocity += gravity;
-
-		item = item->next;
-	}*/
 
 	if (rocket->pos.y <= -2100 && rocket->pos.y > -8800)
 	{
